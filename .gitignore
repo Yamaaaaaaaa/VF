@@ -1,0 +1,30 @@
+# ─── Dữ liệu – KHÔNG commit lên git ──────────────────────────
+data/raw/p*/           # File .wav đã tiền xử lý (chỉ giữ VCTK-Corpus gốc)
+data/features/         # File .npy đặc trưng thô
+data/raw/VCTK-Corpus/  # Corpus gốc quá lớn
+data/
+.claude
+
+# ─── Python ───────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+
+# ─── IDE / OS ─────────────────────────────────────────────────
+.vscode/
+.idea/
+*.DS_Store
+Thumbs.db
+
+# ─── Secrets – KHÔNG bao giờ commit ──────────────────────────
+.env
+*.env
+config/secrets.yaml

@@ -1,0 +1,11 @@
+# Xử lý âm thanh
+librosa>=0.10.0
+soundfile>=0.12.1
+numpy>=1.24.0
+
+# Progress bar
+tqdm>=4.65.0
+
+# Database (dùng ở các bước sau)
+psycopg2-binary>=2.9.0
+pgvector>=0.2.0
