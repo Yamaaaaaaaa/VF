@@ -2,13 +2,15 @@ import psycopg2
 from psycopg2.extras import DictCursor
 import numpy as np
 
+import os
+
 # Database connection settings
 DB_CONFIG = {
-    "dbname": "voice_db",
-    "user": "admin",
-    "password": "admin_password",
-    "host": "localhost",
-    "port": "5432"
+    "dbname": os.getenv("DB_NAME", "voice_db"),
+    "user": os.getenv("DB_USER", "admin"),
+    "password": os.getenv("DB_PASSWORD", "admin_password"),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "5432")
 }
 
 def get_connection():

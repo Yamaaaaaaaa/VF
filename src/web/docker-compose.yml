@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  web-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: voice_similarity_backend
+    ports:
+      - "8000:8000"
+    environment:
+      # Connect back to the host machine where the database (voice_similarity_db) is running via port mapped 5432
+      - DB_HOST=host.docker.internal
+      - DB_PORT=5432
+      - DB_NAME=voice_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin_password
+    volumes:
+      # Map the project's root data folder into the container to serve the audio files
+      - ../../data:/data
+    restart: unless-stopped
+    # host.docker.internal is resolved cleanly in Docker for Windows
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+  web-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: voice_similarity_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - web-backend
+    restart: unless-stopped
