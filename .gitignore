@@ -3,7 +3,7 @@ data/raw/p*/           # File .wav đã tiền xử lý (chỉ giữ VCTK-Corpus
 data/features/         # File .npy đặc trưng thô
 data/raw/VCTK-Corpus/  # Corpus gốc quá lớn
 data/
-.claude
+.claude/agents
 
 # ─── Python ───────────────────────────────────────────────────
 __pycache__/
