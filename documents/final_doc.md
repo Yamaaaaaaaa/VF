@@ -338,7 +338,7 @@ embedding = np.concatenate([
 **1. Lưu trữ và Tìm kiếm bằng pgvector**
 Để xây dựng một hệ thống tìm kiếm giọng nói theo thời gian thực với lượng dữ liệu lớn, việc so sánh từng mảng NumPy bằng các vòng lặp truyền thống trong code Python là bất khả thi về mặt hiệu năng. Do đó, dự án đưa toàn bộ các vector 99 chiều này vào lưu trữ trực tiếp trong cơ sở dữ liệu **PostgreSQL** thông qua phần mở rộng **`pgvector`**.
 
-`pgvector` biến hệ quản trị CSDL truyền thống thành một Vector Database thực thụ. Nó hiểu được kiểu dữ liệu `vector` (thay vì chỉ lưu mảng text) và hỗ trợ quét tìm kiếm đối sánh (Vector Search) dựa trên các index đã được tối ưu hóa sâu ở tầng C/C++.
+`pgvector` biến hệ quản trị CSDL truyền thống thành một Vector Database thực thụ. Nó hiểu được kiểu dữ liệu `vector` (thay vì chỉ lưu mảng text) và hỗ trợ quét tìm kiếm đối sánh (Vector Search) dựa trên các thuật toán chỉ mục tiên tiến như **HNSW (Hierarchical Navigable Small World)** đã được tối ưu hóa sâu ở tầng C/C++.
 
 **2. Độ tương đồng Cosine (Cosine Similarity)**
 Để xác định hai người nói có giống nhau hay không, `pgvector` sử dụng thuật toán tính khoảng cách Cosine (Ký hiệu toán tử trong SQL là `<=>`). Thay vì đo lường khoảng cách vật lý thông thường, thuật toán này đo lường **góc hợp bởi hai vector** trong không gian 99 chiều:
