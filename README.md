@@ -41,10 +41,19 @@ python src/preprocessing/preprocess.py
 ```
 Kết quả lưu tại: `data/processed/`.
 
-### 1.4 Trích xuất đặc trưng & Nạp dữ liệu (Ingest)
+### 1.4 Trích xuất Metadata
+Trích xuất các thông tin âm học (RMS, Sample Rate) và phi âm học (Speaker ID, Keyword):
+```bash
+python src/extract_metadata/extract_metadata.py
+```
+*Hoặc sử dụng Notebook:* `src/extract_metadata/extract_metadata.ipynb`
+Kết quả lưu tại: `data/metadata/metadata.csv`.
+
+### 1.5 Trích xuất đặc trưng & Nạp dữ liệu (Ingest)
 Thực hiện qua các Jupyter Notebook để dễ dàng theo dõi:
 1. **Trích xuất**: Chạy `src/feature_extraction/feature_extraction.ipynb` để tạo vector embedding 99 chiều.
 2. **Nạp dữ liệu**: Chạy `src/database/ingest.ipynb` để đẩy toàn bộ metadata và vector vào database.
+
 
 ---
 
