@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  # 1. Cơ sở dữ liệu PostgreSQL với pgvector
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: voice_similarity_db
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin_password
+      POSTGRES_DB: voice_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # 2. Backend FastAPI
+  web-backend:
+    build:
+      context: ./src/web/backend
+      dockerfile: Dockerfile
+    container_name: voice_similarity_backend
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=voice_db
+      - DB_USER=admin
+      - DB_PASSWORD=admin_password
+    volumes:
+      - ./data:/data
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  # 3. Frontend React (Vite)
+  web-frontend:
+    build:
+      context: ./src/web/frontend
+      dockerfile: Dockerfile
+    container_name: voice_similarity_frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - web-backend
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
