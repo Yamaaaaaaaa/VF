@@ -19,6 +19,7 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [uploadedFileName, setUploadedFileName] = useState('');
+  const [uploadedFileUrl, setUploadedFileUrl] = useState(null);
   const fileInputRef = useRef(null);
 
   // Global Audio Player State
@@ -49,11 +50,16 @@ function App() {
     const file = event.target.files[0];
     if (!file) return;
 
+    if (uploadedFileUrl) {
+      URL.revokeObjectURL(uploadedFileUrl);
+    }
+
     setUploadedFileName(file.name);
     setUploading(true);
     
     // Auto play uploaded file
     const objectUrl = URL.createObjectURL(file);
+    setUploadedFileUrl(objectUrl);
     playTrack({ url: objectUrl, title: file.name, subtitle: 'Uploaded Sample' });
 
     const formData = new FormData();
@@ -173,14 +179,36 @@ function App() {
                 accept=".wav"
                 onChange={handleFileUpload}
               />
-              <button 
-                className="btn-primary" 
-                onClick={() => fileInputRef.current.click()}
-                disabled={uploading}
-              >
-                {uploading ? <div className="loader"></div> : <UploadCloud size={20} />}
-                {uploading ? 'Processing Audio...' : 'Upload Sample'}
-              </button>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+                <button 
+                  className="btn-primary" 
+                  onClick={() => fileInputRef.current.click()}
+                  disabled={uploading}
+                >
+                  {uploading ? <div className="loader"></div> : <UploadCloud size={20} />}
+                  {uploading ? 'Processing Audio...' : (uploadedFileName ? 'Upload Another' : 'Upload Sample')}
+                </button>
+                
+                {uploadedFileName && !uploading && uploadedFileUrl && (
+                  <div className="fade-in" style={{ 
+                    display: 'flex', alignItems: 'center', gap: '1rem', 
+                    background: 'rgba(255,255,255,0.15)', padding: '0.5rem 1rem', 
+                    borderRadius: '99px', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.3)'
+                  }}>
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <span style={{ fontSize: '0.75rem', opacity: 0.9 }}>Uploaded Source</span>
+                      <span style={{ fontSize: '0.875rem', fontWeight: 600 }}>{uploadedFileName}</span>
+                    </div>
+                    <button 
+                      className="play-btn-small" 
+                      style={{ background: 'white', color: 'var(--primary-orange)' }}
+                      onClick={() => playTrack({ url: uploadedFileUrl, title: uploadedFileName, subtitle: 'Uploaded Sample' })}
+                    >
+                      {currentTrack?.url === uploadedFileUrl && isPlaying ? <Pause size={16} fill="currentColor" /> : <Play size={16} fill="currentColor" style={{ marginLeft: '2px' }} />}
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
 
             {searchResults.length > 0 && (
