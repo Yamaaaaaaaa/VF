@@ -459,8 +459,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 0.75rem;
   font-weight: bold;
+  flex-shrink: 0;
+  text-align: center;
+  word-break: break-all;
+  padding: 4px;
 }
 
 .artist-info h4 {
