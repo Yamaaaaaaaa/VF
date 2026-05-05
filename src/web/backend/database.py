@@ -88,3 +88,44 @@ def search_similar_voices(query_embedding: np.ndarray, top_k=5):
             return [dict(r) for r in results]
     finally:
         conn.close()
+
+
+def fetch_embedding(file_id: int):
+    """Return (file_path, embedding_list) for a given file_id."""
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=DictCursor) as cur:
+            cur.execute(
+                "SELECT file_path, embedding::text FROM voice_records WHERE file_id = %s",
+                (file_id,)
+            )
+            row = cur.fetchone()
+            if not row:
+                return None, None
+            import re
+            nums = re.findall(r'[-+]?\d*\.?\d+(?:[eE][-+]?\d+)?', row['embedding'])
+            embedding = [float(x) for x in nums]
+            return row['file_path'], embedding
+    finally:
+        conn.close()
+
+
+def search_by_embedding(embedding: list, top_k: int = 5, exclude_file_id: int = -1):
+    """Similarity search using a pre-fetched embedding list; excludes the source record."""
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=DictCursor) as cur:
+            emb_str = "[" + ",".join(map(str, embedding)) + "]"
+            query = """
+                SELECT file_id, speaker, accent, gender, age, file_path, duration_sec,
+                       1 - (embedding <=> %s::vector) AS similarity
+                FROM voice_records
+                WHERE file_id != %s
+                ORDER BY embedding <=> %s::vector
+                LIMIT %s
+            """
+            cur.execute(query, (emb_str, exclude_file_id, emb_str, top_k))
+            return [dict(r) for r in cur.fetchall()]
+    finally:
+        conn.close()
+
